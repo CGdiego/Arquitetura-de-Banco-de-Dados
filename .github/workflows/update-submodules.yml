@@ -1,0 +1,17 @@
+name: Update Submodules
+
+on:
+  workflow_dispatch:        # manual trigger only — run from the Actions tab
+
+permissions:
+  contents: write           # required to push the commit
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update all submodules to latest on main
+        uses: runsascoded/update-submodules@v1
+        with:
+          branch: main
+          token: ${{ secrets.GITHUB_TOKEN }}
