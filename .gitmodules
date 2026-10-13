@@ -1,0 +1,3 @@
+[submodule "PjBL-Steam"]
+	path = PjBL-Steam
+	url = https://github.com/CGdiego/PjBL-Steam.git
