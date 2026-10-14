@@ -10,15 +10,25 @@ jobs:
   update-submodules:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repositório
+      - name: Reescrever URLs do Git para autenticar via Token
+        run: |
+          TOKEN="${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}"
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "git@github.com:"
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
+
+      - name: Checkout repositório principal
         uses: actions/checkout@v4
         with:
-          submodules: recursive
-          token: ${{ secrets.GITHUB_TOKEN }} # Substitua por ${{ secrets.PAT_TOKEN }} se os submódulos forem privados
+          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      - name: Atualizar submódulos e realizar commit
+      - name: Atualizar todos os submódulos
         run: |
-          git submodule update --remote --merge
+          git submodule sync --recursive
+          git submodule update --init --remote --recursive --merge
+
+      - name: Realizar Commit e Push se houver alterações
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
